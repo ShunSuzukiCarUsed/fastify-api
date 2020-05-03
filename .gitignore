@@ -1,0 +1,8 @@
+# temp files from editors
+*~
+*.bak
+.DS_Store
+.settings
+*.tmproj
+src/node_modules/
+.idea/

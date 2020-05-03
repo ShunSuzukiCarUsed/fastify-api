@@ -5,7 +5,7 @@ const boom = require('boom')
 const Car = require('../models/Car')
 
 // Get all cars
-exports.getCars = async (req, reply) => {
+exports.getCars = async () => {
   try {
     const cars = await Car.find()
     return cars
@@ -15,9 +15,9 @@ exports.getCars = async (req, reply) => {
 }
 
 // Get single car by ID
-exports.getSingleCar = async (req, reply) => {
+exports.getSingleCar = async req => {
   try {
-    const id = req.params.id
+    const id = req.params === undefined ? req.id : req.params.id
     const car = await Car.findById(id)
     return car
   } catch (err) {
@@ -26,21 +26,21 @@ exports.getSingleCar = async (req, reply) => {
 }
 
 // Add a new car
-exports.addCar = async (req, reply) => {
+exports.addCar = async req => {
   try {
-    const car = new Car(req.body)
-    return car.save()
+    const car = new Car(req)
+    const newCar = await car.save()
+    return newCar
   } catch (err) {
     throw boom.boomify(err)
   }
 }
 
 // Update an existing car
-exports.updateCar = async (req, reply) => {
+exports.updateCar = async req => {
   try {
-    const id = req.params.id
-    const car = req.body
-    const { ...updateData } = car
+    const id = req.params === undefined ? req.id : req.params.id
+    const updateData = req.params === undefined ? req : req.params
     const update = await Car.findByIdAndUpdate(id, updateData, { new: true })
     return update
   } catch (err) {
@@ -49,9 +49,9 @@ exports.updateCar = async (req, reply) => {
 }
 
 // Delete a car
-exports.deleteCar = async (req, reply) => {
+exports.deleteCar = async req => {
   try {
-    const id = req.params.id
+    const id = req.params === undefined ? req.id : req.params.id
     const car = await Car.findByIdAndRemove(id)
     return car
   } catch (err) {
